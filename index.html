@@ -215,7 +215,8 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
 .pop{position:absolute;font-weight:700;font-family:'Fredoka',sans-serif;pointer-events:none;animation:pop .7s ease-out forwards}
 @keyframes pop{to{transform:translateY(-34px);opacity:0}}
 
-.hint-line{margin-top:8px;font-size:.82rem;color:#A9B8CB;font-style:italic;letter-spacing:.01em}
+.hint-bags{margin-top:6px;text-align:center;font-size:1.15rem;letter-spacing:.18em}
+.hint-line{margin-top:8px;text-align:center;font-size:.82rem;color:#A9B8CB;font-style:italic;letter-spacing:.01em}
 .board{margin-top:4px;border-top:1px solid var(--line);padding-top:12px;text-align:right}
 .board h4{margin:0 0 8px;font-family:'Fredoka',sans-serif;font-size:.95rem;color:var(--ink)}
 .board ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
@@ -277,7 +278,8 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
 
   <footer>
     <div>נתראה ב־8:30 עם קפה ביד ☕</div>
-    <div class="hint-line">לא כל מה שקורה היום כתוב בלו״ז. <span aria-hidden="true">🎒🎒🎒</span></div>
+    <div class="hint-line">לא כל מה שקורה היום כתוב בלו״ז.</div>
+    <div class="hint-bags" aria-hidden="true">🎒🎒🎒</div>
     <button class="reset" onclick="resetAll()">איפוס הסימונים</button>
   </footer>
 </main>
@@ -324,7 +326,7 @@ const SCHEDULE = [
   {t:"9:00–10:15", title:"מליאת מנהלת", note:"פותחים את השנה יחד", e:"🎙️", s:[9,0], en:[10,15]},
   {t:"10:15–10:30",title:"הפסקה", note:"מתיחת רגליים", e:"🥐", s:[10,15], en:[10,30]},
   {parallel:true, t:"10:30–11:30", s:[10,30], en:[11,30]},
-  {t:"11:30–12:00",title:"חלוקת מערכות וסידור כיתות", note:"כולם יחד", e:"📐", s:[11,30], en:[12,0]},
+  {t:"11:30–12:00",title:"חלוקת מערכות וסידור כיתות", note:"", e:"📐", s:[11,30], en:[12,0]},
   {t:"12:00–13:00",title:"ארוחת צהריים", note:"ההפסקה הכי חשובה בלו״ז", e:"🍽️", s:[12,0], en:[13,0]},
   {t:"13:00–14:30",title:"מתן פורת", note:"מפגש מרכזי", e:"✨", s:[13,0], en:[14,30]},
   {t:"14:30–15:00",title:"חלוקת מערכות וסידור כיתות", note:"סוגרים את היום מסודרים", e:"🗂️", s:[14,30], en:[15,0]},
@@ -393,7 +395,7 @@ function render(){
         <span class="c-body">
           <span class="c-time">${it.t}</span>
           <span class="c-title">${it.title}</span>
-          <p class="c-note">${it.note}</p>
+          ${it.note ? `<p class="c-note">${it.note}</p>` : ``}
         </span>
         <span class="c-check" aria-hidden="true">✓</span>
       </button>
@@ -633,9 +635,17 @@ function startGame(){
     gLeft--; document.getElementById('gTime').textContent=gLeft;
     if(gLeft<=0) endGame();
   },1000);
-  gSpawn=setInterval(spawn, 620);
+  scheduleSpawn();
 }
-function stopGame(){ gRun=false; clearInterval(gIv); clearInterval(gSpawn); document.getElementById('gBtn').textContent="שחקו שוב"; }
+/* ככל שהזמן עובר הפריטים מופיעים צפוף יותר */
+function scheduleSpawn(){
+  if(!gRun) return;
+  spawn();
+  gSpawn=setTimeout(scheduleSpawn, 620 - 300*progress());
+}
+/* 0 בתחילת המשחק, 1 בסופו */
+function progress(){ return Math.min(1, Math.max(0, (30-gLeft)/30)); }
+function stopGame(){ gRun=false; clearInterval(gIv); clearTimeout(gSpawn); document.getElementById('gBtn').textContent="שחקו שוב"; }
 function endGame(){
   stopGame();
   document.getElementById('field').innerHTML='';
@@ -657,7 +667,7 @@ function spawn(){
   el.style.top='-46px';
   el.setAttribute('role','button');
   f.appendChild(el);
-  const dur = 2600 + Math.random()*1400;
+  const dur = (2600 + Math.random()*1400) * (1 - 0.55*progress());
   const t0=performance.now();
   let alive=true;
   el.addEventListener('click',()=>{
