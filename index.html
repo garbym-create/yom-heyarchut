@@ -235,6 +235,17 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
 @keyframes pop{to{transform:translateY(-34px);opacity:0}}
 
 .hint-bags{margin-top:6px;text-align:center;font-size:1.15rem;letter-spacing:.18em}
+/* פודיום שלוש המובילות — מופיע רק כשיש תוצאות */
+.podium{max-width:420px;margin:22px auto 4px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 14px}
+.podium[hidden]{display:none}
+.podium-title{font-size:.98rem;margin:0 0 12px;color:var(--ink);text-align:center}
+.podium-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.podium-list li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#F7FAFD;border:1px solid var(--line);font-size:.95rem}
+.podium-list li:first-child{background:#FFF6E3;border-color:var(--gold)}
+.podium-list .medal{font-size:1.25rem;line-height:1;flex:0 0 auto}
+.podium-list .who{flex:1;min-width:0;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.podium-list .pts{font-family:'Fredoka',sans-serif;color:var(--night-2);font-variant-numeric:tabular-nums;font-size:1.05rem}
+.podium-list .pts small{font-size:.72rem;color:var(--muted);font-family:'Heebo',sans-serif;margin-inline-start:3px}
 .hint-line{margin-top:8px;text-align:center;font-size:.82rem;color:#A9B8CB;font-style:italic;letter-spacing:.01em}
 .board{margin-top:4px;border-top:1px solid var(--line);padding-top:12px;text-align:right}
 .board h4{margin:0 0 8px;font-family:'Fredoka',sans-serif;font-size:.95rem;color:var(--ink)}
@@ -299,6 +310,12 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
     <div>נתראה ב־8:30 עם קפה ביד ☕</div>
     <div class="hint-line">לא כל מה שקורה היום כתוב בלו״ז.</div>
     <div class="hint-bags" aria-hidden="true">🎒🎒🎒</div>
+
+    <section class="podium" id="podium" hidden aria-label="שלוש המובילות">
+      <h3 class="podium-title">🏆 מובילות מרוץ הציוד</h3>
+      <ol class="podium-list" id="podiumList"></ol>
+    </section>
+
     <button class="reset" onclick="resetAll()">איפוס הסימונים</button>
   </footer>
 </main>
@@ -628,7 +645,20 @@ async function saveScore(){
 
 function sortBoard(){ boardData.sort((a,b)=>b.s-a.s); boardData=boardData.slice(0,10); }
 
+/* שלוש המובילות בתחתית העמוד הראשי */
+function renderPodium(){
+  const box=document.getElementById('podium'), ol=document.getElementById('podiumList');
+  if(!box) return;
+  const top=boardData.slice(0,3);
+  box.hidden = top.length===0;   // עד שמישהי משחקת — העמוד נשאר נקי
+  if(!top.length) return;
+  const medal=['🥇','🥈','🥉'];
+  ol.innerHTML = top.map((r,i)=>
+    `<li><span class="medal" aria-hidden="true">${medal[i]}</span><span class="who">${esc(r.n)}</span><span class="pts">${r.s}<small>נק׳</small></span></li>`
+  ).join('');
+}
 function renderBoard(){
+  renderPodium();
   const ol=document.getElementById('boardList'), em=document.getElementById('boardEmpty');
   if(!ol) return;
   em.hidden = boardData.length>0;
@@ -746,6 +776,7 @@ function spawn(){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeGame(); });
 
 render();
+loadBoard(); setInterval(()=>{ if(!document.hidden && !gRun) loadBoard(); }, 60000);
 tickCountdown(); setInterval(tickCountdown,1000);
 markNow(); setInterval(markNow,30000);
 </script>
