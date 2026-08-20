@@ -211,6 +211,25 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
 .item{position:absolute;font-size:2rem;line-height:1;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;padding:6px}
 .item:active{transform:scale(1.25)}
 .g-foot{padding:16px 18px;text-align:center}
+.screen{padding:18px}
+.screen[hidden]{display:none}
+.screen-h{margin:0 0 12px;font-family:'Fredoka',sans-serif;font-size:1.05rem;text-align:center}
+.intro-emoji{font-size:2rem;text-align:center;letter-spacing:.1em;margin-bottom:6px}
+.rules-list{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:9px}
+.rules-list li{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:.92rem;line-height:1.45}
+.rules-list li span{font-size:1.15rem;line-height:1.3;flex:0 0 auto}
+.fld-label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+#playerName{width:100%;font-family:inherit;font-size:1rem;padding:12px;border:2px solid var(--line);border-radius:14px;min-height:48px;background:#fff}
+#playerName:focus{outline:none;border-color:var(--gold)}
+.btn.wide{width:100%;margin-top:12px}
+.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--muted)}
+.btn.ghost:hover{box-shadow:none;border-color:#B9C9DC}
+.end-score{font-family:'Fredoka',sans-serif;font-size:3rem;line-height:1;text-align:center;color:var(--night-2);font-variant-numeric:tabular-nums}
+.end-btns{display:flex;gap:10px;margin-top:16px}
+.end-btns .btn{flex:1;padding:13px 10px;font-size:.95rem}
+.screen .g-stats{padding:0 2px 12px}
+.screen .g-msg{text-align:center}
+.field{border-radius:16px}
 .g-msg{font-size:.92rem;color:var(--muted);margin:0 0 12px;min-height:1.4em}
 .pop{position:absolute;font-weight:700;font-family:'Fredoka',sans-serif;pointer-events:none;animation:pop .7s ease-out forwards}
 @keyframes pop{to{transform:translateY(-34px);opacity:0}}
@@ -291,25 +310,46 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
       <h3 id="gTitle">🎒 מרוץ הציוד</h3>
       <button class="g-close" onclick="closeGame()" aria-label="סגירת המשחק">✕</button>
     </div>
-    <div class="g-stats">
-      <span>ניקוד <b id="gScore">0</b></span>
-      <span>שיא <b id="gBest">0</b></span>
-      <span>זמן <b id="gTime">30</b></span>
-    </div>
-    <div class="field" id="field"></div>
-    <div class="g-foot">
-      <p class="g-msg" id="gMsg">לחצו על ציוד בית ספר. היזהרו מהשעון המעורר ⏰ — הוא מוריד 5.</p>
-      <button class="btn" id="gBtn" onclick="startGame()">התחילו</button>
-      <div class="name-row" id="nameRow" hidden>
-        <input id="playerName" type="text" maxlength="18" placeholder="השם שלך ללוח" aria-label="השם שלך ללוח המובילים">
-        <button class="btn" onclick="saveScore()">שמירה</button>
+    <!-- שקופית 1: הוראות ושם -->
+    <section class="screen" id="scrIntro">
+      <div class="intro-emoji" aria-hidden="true">🎒 ✏️ 📚</div>
+      <h4 class="screen-h">איך משחקים?</h4>
+      <ul class="rules-list">
+        <li><span aria-hidden="true">📚</span>ציוד בית ספר נופל מלמעלה — לחצו עליו וקבלו נקודה</li>
+        <li><span aria-hidden="true">⏰</span>היזהרו מהשעון המעורר — הוא מוריד 5 נקודות</li>
+        <li><span aria-hidden="true">⚡</span>ככל שהזמן עובר הכול נופל מהר יותר</li>
+        <li><span aria-hidden="true">⏱️</span>יש לכם 30 שניות בדיוק</li>
+      </ul>
+      <label class="fld-label" for="playerName">השם שלך ללוח המובילים</label>
+      <input id="playerName" type="text" maxlength="18" placeholder="איך לקרוא לך?" autocomplete="off">
+      <p class="g-msg" id="introMsg"></p>
+      <button class="btn wide" onclick="beginGame()">שמירה והתחלה</button>
+    </section>
+
+    <!-- שקופית 2: המשחק -->
+    <section class="screen" id="scrGame" hidden>
+      <div class="g-stats">
+        <span>ניקוד <b id="gScore">0</b></span>
+        <span>שיא <b id="gBest">0</b></span>
+        <span>זמן <b id="gTime">30</b></span>
       </div>
-      <div class="board" id="board" style="margin-top:16px">
+      <div class="field" id="field"></div>
+    </section>
+
+    <!-- שקופית 3: תוצאה ולוח המובילים -->
+    <section class="screen" id="scrEnd" hidden>
+      <div class="end-score" id="endScore">0</div>
+      <p class="g-msg" id="gMsg"></p>
+      <div class="board" id="board">
         <h4>🏆 לוח המובילים</h4>
         <p class="empty" id="boardEmpty">עוד אין תוצאות. תהיו הראשונים.</p>
         <ol id="boardList"></ol>
       </div>
-    </div>
+      <div class="end-btns">
+        <button class="btn" onclick="playAgain()">שחקו שוב</button>
+        <button class="btn ghost" onclick="closeGame()">סגירה</button>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -563,15 +603,11 @@ async function loadBoard(){
 }
 
 async function saveScore(){
-  const inp=document.getElementById('playerName');
-  const name=(inp.value||'').trim().slice(0,18);
-  if(!name){ inp.focus(); toast("צריך שם קצר ללוח"); return; }
-  myName=name;
-  const entry={n:name, s:gScore, t:Date.now()};
+  if(!myName) return;
+  const entry={n:myName, s:gScore, t:Date.now()};
 
   if(!FIREBASE_URL){
     boardData.push(entry); sortBoard(); renderBoard();
-    document.getElementById('nameRow').hidden=true;
     toast("נשמר במכשיר הזה בלבד");
     return;
   }
@@ -583,11 +619,9 @@ async function saveScore(){
     const {name:key}=await r.json();
     myKey=key;
     boardData.push({k:key, ...entry}); sortBoard(); renderBoard();
-    document.getElementById('nameRow').hidden=true;
     toast("נשמרת בלוח 🏆");
   }catch(e){
     boardData.push(entry); sortBoard(); renderBoard();
-    document.getElementById('nameRow').hidden=true;
     toast("השמירה לשרת נכשלה. התוצאה נשמרה מקומית.");
   }
 }
@@ -615,12 +649,35 @@ function secretTap(){
   if(tapCount===3){ tapCount=0; openGame(); }
   else if(tapCount===2){ toast("עוד לחיצה אחת… 👀"); }
 }
+/* מעבר בין שלוש השקופיות: הוראות ← משחק ← תוצאה */
+function showScreen(id){
+  ['scrIntro','scrGame','scrEnd'].forEach(s=>{
+    document.getElementById(s).hidden = (s!==id);
+  });
+}
 function openGame(){
   document.getElementById('gameModal').classList.add('open');
   document.getElementById('gBest').textContent=gBest;
+  document.getElementById('introMsg').textContent='';
+  if(myName) document.getElementById('playerName').value=myName;
+  showScreen('scrIntro');
   loadBoard();
   burst(50);
 }
+/* שקופית 1: שומרים את השם ויוצאים לדרך */
+function beginGame(){
+  const inp=document.getElementById('playerName');
+  const name=(inp.value||'').trim().slice(0,18);
+  if(!name){
+    document.getElementById('introMsg').textContent="רק צריך שם קצר, כדי שנדע מי במקום הראשון 🙂";
+    inp.focus();
+    return;
+  }
+  myName=name;
+  showScreen('scrGame');
+  startGame();
+}
+function playAgain(){ showScreen('scrIntro'); document.getElementById('introMsg').textContent=''; }
 function closeGame(){ stopGame(); document.getElementById('gameModal').classList.remove('open'); }
 function startGame(){
   if(gRun) return;
@@ -628,9 +685,6 @@ function startGame(){
   document.getElementById('field').innerHTML='';
   document.getElementById('gScore').textContent=0;
   document.getElementById('gTime').textContent=30;
-  document.getElementById('gMsg').textContent="קדימה! 30 שניות.";
-  document.getElementById('gBtn').textContent="רץ…";
-  document.getElementById('nameRow').hidden=true;
   gIv=setInterval(()=>{
     gLeft--; document.getElementById('gTime').textContent=gLeft;
     if(gLeft<=0) endGame();
@@ -645,17 +699,16 @@ function scheduleSpawn(){
 }
 /* 0 בתחילת המשחק, 1 בסופו */
 function progress(){ return Math.min(1, Math.max(0, (30-gLeft)/30)); }
-function stopGame(){ gRun=false; clearInterval(gIv); clearTimeout(gSpawn); document.getElementById('gBtn').textContent="שחקו שוב"; }
+function stopGame(){ gRun=false; clearInterval(gIv); clearTimeout(gSpawn); }
 function endGame(){
   stopGame();
   document.getElementById('field').innerHTML='';
   const best = gScore>gBest;
-  if(best){ gBest=gScore; document.getElementById('gBest').textContent=gBest; burst(90); }
-  document.getElementById('gMsg').textContent = best ? `שיא חדש: ${gScore} נקודות! 🏆` : `סיימתם עם ${gScore} נקודות.`;
-  if(gScore>0){
-    document.getElementById('nameRow').hidden=false;
-    if(myName) document.getElementById('playerName').value=myName;
-  }
+  if(best){ gBest=gScore; document.getElementById('gBest').textContent=gBest; }
+  document.getElementById('endScore').textContent=gScore;
+  document.getElementById('gMsg').textContent = best ? `שיא חדש שלך, ${myName}! 🏆` : `סיימתם עם ${gScore} נקודות.`;
+  showScreen('scrEnd');
+  if(gScore>0){ burst(90); saveScore(); }
 }
 function spawn(){
   const f=document.getElementById('field');
