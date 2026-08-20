@@ -68,7 +68,13 @@ tr.meal td{background:#FFFBF2}
   margin-top:12px;display:flex;justify-content:space-between;align-items:center;
   border-top:1.5px solid #DFE7F0;padding-top:8px;font-size:8.5pt;color:#6B7F99;
 }
-.foot .note{color:#1B3C66;font-weight:600}
+.foot .note{color:#1B3C66;font-weight:600;text-align:left;line-height:1.5;font-size:9.5pt}
+.qr-block{display:flex;align-items:center;gap:10px}
+.qr{width:22mm;height:22mm;flex:0 0 auto;border:1px solid #DFE7F0;border-radius:6px;padding:1.5mm;background:#fff}
+.qr svg{display:block;width:100%;height:100%}
+.qr-text{display:flex;flex-direction:column;gap:1px}
+.qr-text b{font-size:9.5pt;color:#0B1D34}
+.qr-text .url{color:#1B3C66;font-weight:600;direction:ltr;text-align:right}
 </style>
 </head>
 <body>
@@ -157,9 +163,25 @@ tr.meal td{background:#FFFBF2}
 </table>
 
 <div class="foot">
-  <span class="note">נתראה ב־8:30 עם קפה ביד ☕</span>
-  <span>הלו״ז המלא והאינטראקטיבי: garbym-create.github.io/yom-heyarchut</span>
+  <div class="qr-block">
+    <div class="qr" id="qr"></div>
+    <div class="qr-text">
+      <b>סרקו לגרסה האינטראקטיבית</b>
+      <span>לו״ז חי, סימון תחנות ומשפט לפתיחת שנה</span>
+      <span class="url">garbym-create.github.io/yom-heyarchut</span>
+    </div>
+  </div>
+  <span class="note">נתראה ב־8:30<br>עם קפה ביד ☕</span>
 </div>
 
+<script src="qr.js"></script>
+<script>
+(function(){
+  var q = qrcode(0, 'M');
+  q.addData('https://garbym-create.github.io/yom-heyarchut/');
+  q.make();
+  document.getElementById('qr').innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true});
+})();
+</script>
 </body>
 </html>
