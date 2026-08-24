@@ -241,6 +241,17 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
 @keyframes pop{to{transform:translateY(-34px);opacity:0}}
 
 .hint-bags{margin-top:6px;text-align:center;font-size:1.15rem;letter-spacing:.18em}
+/* קפיצה קלה פעם בכמה שניות — רמז שקט שיש כאן משהו */
+.hint-bags span{display:inline-block;animation:bagHop 5s ease-in-out infinite}
+.hint-bags span:nth-child(2){animation-delay:.14s}
+.hint-bags span:nth-child(3){animation-delay:.28s}
+@keyframes bagHop{
+  0%,84%,100%{transform:translateY(0)}
+  88%{transform:translateY(-8px)}
+  92%{transform:translateY(0)}
+  95%{transform:translateY(-3px)}
+  98%{transform:translateY(0)}
+}
 /* פודיום שלוש המובילות — מופיע רק כשיש תוצאות */
 .podium{max-width:420px;margin:22px auto 4px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 14px}
 .podium[hidden]{display:none}
@@ -315,7 +326,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
 
   <footer>
     <div>נתראה ב־8:30 עם קפה ביד ☕</div>
-    <div class="hint-bags" aria-hidden="true">🎒🎒🎒</div>
+    <div class="hint-bags" aria-hidden="true"><span>🎒</span><span>🎒</span><span>🎒</span></div>
 
     <section class="podium" id="podium" hidden aria-label="שלוש המובילות">
       <h3 class="podium-title">🏆 הפודיום</h3>
