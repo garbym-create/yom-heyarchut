@@ -388,11 +388,6 @@ const SCHEDULE = [
   {t:"8:30–9:00",  title:"התכנסות", note:"קפה, בוקר טוב, פנים חדשות וישנות", e:"☕", s:[8,30], en:[9,0]},
   {t:"9:00–10:15", title:"מליאת מנהלת", note:"פותחים את השנה יחד", e:"🎙️", s:[9,0], en:[10,15]},
   {t:"10:15–10:30",title:"הפסקה", note:"מתיחת רגליים", e:"🥐", s:[10,15], en:[10,30]},
-  {parallel:true, t:"10:30–11:30", s:[10,30], en:[11,30]},
-  {t:"11:30–12:00",title:"חלוקת מערכות וסידור כיתות", note:"", e:"📐", s:[11,30], en:[12,0]},
-  {t:"12:00–13:00",title:"ארוחת צהריים", note:"ההפסקה הכי חשובה בלו״ז", e:"🍽️", s:[12,0], en:[13,0]},
-  {t:"13:00–14:30",title:"מתן פורת", note:"מפגש מרכזי", e:"✨", s:[13,0], en:[14,30]},
-  {t:"14:30–15:00",title:"חלוקת מערכות וסידור כיתות", note:"סוגרים את היום מסודרים", e:"🗂️", s:[14,30], en:[15,0]},
 ];
 const TRACK_A = [
   {t:"10:30–10:45", label:"שרית מנהלת"},
@@ -788,8 +783,8 @@ function spawn(){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeGame(); });
 
 render();
-/* הדגמה: שלוש התחנות הראשונות כבר מסומנות, כדי להראות את מד ההתקדמות בפעולה */
-[0,1,2].forEach(i=>done.add(i)); update();
+/* הדגמה: תחנה אחת כבר מסומנת, כדי להראות את מד ההתקדמות בפעולה */
+[0].forEach(i=>done.add(i)); update();
 loadBoard(); setInterval(()=>{ if(!document.hidden && !gRun) loadBoard(); }, 60000);
 tickCountdown(); setInterval(tickCountdown,1000);
 markNow(); setInterval(markNow,30000);
